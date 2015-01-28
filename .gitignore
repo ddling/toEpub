@@ -58,3 +58,9 @@ tmp/
 
 # res file
 res/
+
+# html file
+*.html
+
+# result
+ebooks/

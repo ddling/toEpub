@@ -15,6 +15,7 @@ class Epub:
     OPES_DIR = None
     CSS_DIR = None
     IMAGE_DIR = None
+    CHAPTER_DIR = None
 
     def __init__(self):
 
@@ -23,6 +24,7 @@ class Epub:
         self.OPES_DIR = self.ROOT + "/tmp/OPS"
         self.IMAGE_DIR = self.OPES_DIR + "/images"
         self.CSS_DIR = self.OPES_DIR + "/css"
+        self.CHAPTER_DIR = self.OPES_DIR + "/chapter"
 
     def createOPF(self):
 
@@ -83,8 +85,6 @@ class Epub:
     def createNCX(self):
 
         ncx_file = open(self.OPES_DIR + "/nav.ncx", 'w')
-        for file_ in os.listdir("res/"):
-            shutil.copy("res/" + file_, self.OPES_DIR)
         xml = u'''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE ncx PUBLIC
      "-//NISO//DTD ncx 2005-1//EN"
@@ -129,22 +129,41 @@ class Epub:
         os.chdir("tmp")
         epub    =   zipfile.ZipFile(EpubName,'w')
         epub.write('mimetype', compress_type=zipfile.ZIP_STORED)
-    
+
         def Help_ZipToEpub(Dir='.'):
-            for p   in  os.listdir(Dir):
-                if  p   ==  EpubName    or  p   ==  'mimetype':
+            for p in os.listdir(Dir):
+                if p == EpubName or p == 'mimetype':
                     continue
-                filepath    =   os.path.join(Dir,p)
-                if  not os.path.isfile(filepath):
-                    if  p   ==  '.' or  p   ==  '..':
+                filepath = os.path.join(Dir,p)
+                if not os.path.isfile(filepath):
+                    if p == '.' or p == '..':
                         continue
                     Help_ZipToEpub(Dir=filepath)
                 else:
                     epub.write(filepath, compress_type=zipfile.ZIP_STORED)
         Help_ZipToEpub()
         epub.close()
+
+    def getSpine(self, chapters = []):
+        pass
+
+    def parseHtmlFile(self):
+        for file_ in os.listdir("res/"):
+            shutil.copy("res/" + file_, self.CHAPTER_DIR)
+        htmlDict = {}
+        count = 1
+        for file_ in os.listdir(self.CHAPTER_DIR):
+            if file_.split(".")[1] == "html":
+                key = "chapter%d" % (count)
+                count += 1
+                value = file_
+                htmlDict[key] = value
+
+        print htmlDict
+        return htmlDict
     
 epub = Epub()
+epub.parseHtmlFile()
 epub.createOPF()
 epub.createNCX()
 epub.compressToEpub()
