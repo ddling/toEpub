@@ -63,4 +63,4 @@ res/
 *.html
 
 # result
-ebooks/
+*.epub

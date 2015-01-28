@@ -159,9 +159,16 @@ class HtmlToEpub:
         Help_ZipToEpub()
         epub.close()
 
+    def clean(self):
+
+        shutil.copy("test.epub", self.ROOT_DIR)
+        os.chdir(self.ROOT_DIR)
+        shutil.rmtree("tmp")
+
 htmlToEpub = HtmlToEpub()
 htmlToEpub.createMetaInf()
 htmlToEpub.createMimetype()
 htmlToEpub.createOPF()
 htmlToEpub.createNCX()
 htmlToEpub.compressToEpub()
+htmlToEpub.clean()
