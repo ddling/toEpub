@@ -23,16 +23,15 @@ class HtmlToEpub:
         os.chdir("tmp")
 
         os.mkdir("META-INF")
-        os.mkdir(self.OEBPS_DIR)
 
-        for htmlFile in os.listdir(self.ROOT_DIR + "/res/"):
-            shutil.copy(self.ROOT_DIR + "/res/" + htmlFile, self.OEBPS_DIR)
+        shutil.copytree(self.ROOT_DIR + "/res/", self.OEBPS_DIR)
 
     def getHtmlFile(self):
         htmlArr = []
         for htmlFile in os.listdir(self.OEBPS_DIR):
-            if htmlFile.split(".")[1] == 'html' and htmlFile.split(".")[0] != 'cover':
-                htmlArr.append(htmlFile)
+            if len(htmlFile.split(".")) == 2:
+                if htmlFile.split(".")[1] == 'html' and htmlFile.split(".")[0] != 'cover':
+                    htmlArr.append(htmlFile)
 
         print htmlArr
         return sorted(htmlArr)
@@ -83,7 +82,7 @@ class HtmlToEpub:
         manifest = ""
         spine = ""
 
-        manifest += '<item id="cover" href="cover.html" media-type="application/xhtml+xml"/>\n<item id="ncx"  href="nav.ncx" media-type="application/x-dtbncx+xml"/>\n<item id="css" href="main.css" media-type="text/css"/>'
+        manifest += '<item id="cover" href="cover.html" media-type="application/xhtml+xml"/>\n<item id="ncx"  href="nav.ncx" media-type="application/x-dtbncx+xml"/>\n<item id="css" href="css/main.css" media-type="text/css"/>'
         spine += '<itemref idref="cover" linear="yes"/>'
 
         i = 1
@@ -163,7 +162,7 @@ class HtmlToEpub:
 
         shutil.copy("test.epub", self.ROOT_DIR)
         os.chdir(self.ROOT_DIR)
-        shutil.rmtree("tmp")
+        #shutil.rmtree("tmp")
 
 htmlToEpub = HtmlToEpub()
 htmlToEpub.createMetaInf()
